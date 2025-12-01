@@ -12,10 +12,10 @@ from shapely.geometry import Polygon
 from shapely.ops import polylabel
 
 # --- CONFIGURATION ---
-TOP_LIDAR_TOPIC = '/lidar_top/scan'
-BOT_LIDAR_TOPIC = '/lidar_bottom/scan'
-IMU_TOPIC = '/mavros/imu/data'
-CMD_TOPIC = '/mavros/setpoint_velocity/cmd_vel'
+TOP_LIDAR_TOPIC = '/X3/lidar/top/scan'
+BOT_LIDAR_TOPIC = '/X3/lidar/bottom/scan'
+IMU_TOPIC = '/X3/imu'
+CMD_TOPIC = '/X3/cmd_vel'
 DEBUG_IMG_TOPIC = '/cnn_navigator/debug_image'
 DEBUG_POLY_TOPIC = '/cnn_navigator/debug_poly'
 DEBUG_CENTER_TOPIC = '/cnn_navigator/debug_center'
