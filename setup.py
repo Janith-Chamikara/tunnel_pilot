@@ -29,6 +29,7 @@ setup(
     entry_points={
         'console_scripts': [
             'cnn_navigator = tunnel_pilot.cnn_navigator_node:main',
+            'cnn_navigator_gazebo = tunnel_pilot.cnn_navigator_node_gazebo:main',
         ],
     },
 )
