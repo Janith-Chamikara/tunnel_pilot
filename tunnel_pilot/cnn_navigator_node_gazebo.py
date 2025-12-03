@@ -25,7 +25,7 @@ LIDAR_FOV_V = 45.0 * (np.pi / 180.0)
 IMG_H, IMG_W = 60, 80
 MAX_Y = 5.0
 MAX_Z = 4.0
-MAX_X = 10.0
+MAX_X = 1.5
 
 
 class CNNNavigator(Node):
@@ -132,6 +132,7 @@ class CNNNavigator(Node):
             return 0.0, 0.0, 0.0
 
     def publish_viz(self, poly, center_point):
+
         # 1. Publish Center Point (Red Dot)
         pt_msg = PointStamped()
         pt_msg.header.stamp = self.get_clock().now().to_msg()
@@ -157,8 +158,6 @@ class CNNNavigator(Node):
         self.poly_pub.publish(poly_msg)
 
     def preprocess(self, ranges_top, ranges_bot, roll, pitch, angles):
-        print(f"Current pitch : {pitch} and roll : {roll}")
-
         x_t = ranges_top * np.cos(angles) * np.cos(LIDAR_FOV_V)
         y_t = ranges_top * np.sin(angles)
         z_t = ranges_top * np.cos(angles) * np.sin(LIDAR_FOV_V)
@@ -189,14 +188,29 @@ class CNNNavigator(Node):
         valid = (u >= 0) & (u < IMG_W) & (v >= 0) & (v < IMG_H)
         u, v = u[valid], v[valid]
 
-        img[0, v, u] = np.clip(x_p[valid] / MAX_X, 0, 1)
-        img[1, v, u] = (pitch + 0.35) / 0.7
-        img[2, v, u] = (roll + 0.35) / 0.7
+        pitch_normalized = np.clip((pitch + 0.35) / 0.7, 0, 1)
+        roll_normalized = np.clip((roll + 0.35) / 0.7, 0, 1)
+
+        # R = pitch
+        # G = roll
+        # B = depth
+        img[0, v, u] = pitch_normalized
+        img[1, v, u] = roll_normalized
+        img[2, v, u] = np.clip(x_p[valid] / MAX_X, 0, 1)
 
         return np.expand_dims(img, axis=0), safe_y, safe_z, safe_radius
 
     def publish_debug_image(self, input_tensor):
         img_array = input_tensor[0]
+
+        # DEBUG: Print channel values
+        mask = img_array[0] > 0  # Non-zero pixels
+        if mask.any():
+            print(f"R (pitch): {img_array[0][mask][0]:.3f}")
+            print(f"G (roll):  {img_array[1][mask][0]:.3f}")
+            print(
+                f"B (depth): min={img_array[2][mask].min():.3f}, max={img_array[2][mask].max():.3f}")
+
         img_display = np.transpose(img_array, (1, 2, 0))
         img_uint8 = (np.clip(img_display, 0, 1) * 255).astype(np.uint8)
 
@@ -231,7 +245,7 @@ class CNNNavigator(Node):
 
         twist = Twist()
 
-        # twist.angular.z = float(predicted_yaw) * 1.5
+        twist.angular.z = float(predicted_yaw) * 0.25
 
         twist.linear.y = float(safe_y) * -0.1
         twist.linear.z = float(safe_z) * -0.1
