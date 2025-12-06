@@ -3,12 +3,13 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    # 1. LIDAR CONFIGURATION
     ydlidar_pkg_dir = get_package_share_directory('ydlidar_ros2_driver')
-
     lidar_launch_path = os.path.join(
         ydlidar_pkg_dir, 'launch', 'dual_lidar.launch.py')
 
@@ -16,6 +17,22 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(lidar_launch_path)
     )
 
+    # 2. MAVROS CONFIGURATION (The Bridge)
+    mavros_pkg_dir = get_package_share_directory('mavros')
+    mavros_launch_path = os.path.join(mavros_pkg_dir, 'launch', 'apm.launch')
+
+    mavros_launch = IncludeLaunchDescription(
+        XMLLaunchDescriptionSource(mavros_launch_path),
+        launch_arguments={
+            'fcu_url': '/dev/ttyACM0:57600',  # USB Port for Pixhawk
+            'gcs_url': 'udp://@localhost',   # Allows QGroundControl connection
+            'tgt_system': '1',
+            'tgt_component': '1',
+            'log_output': 'screen'
+        }.items()
+    )
+
+    # 3. CNN NAVIGATOR
     cnn_node = Node(
         package='tunnel_pilot',
         executable='cnn_navigator',
@@ -26,5 +43,6 @@ def generate_launch_description():
 
     return LaunchDescription([
         lidar_launch,
+        mavros_launch,
         cnn_node
     ])
