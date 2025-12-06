@@ -30,6 +30,7 @@ setup(
         'console_scripts': [
             'cnn_navigator = tunnel_pilot.cnn_navigator_node:main',
             'cnn_navigator_gazebo = tunnel_pilot.cnn_navigator_node_gazebo:main',
+            'motor_test = tunnel_pilot.motor_test:main'
         ],
     },
 )
