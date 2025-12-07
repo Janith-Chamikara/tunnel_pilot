@@ -9,7 +9,7 @@ import time
 
 class MotorTestNode(Node):
     def __init__(self):
-        super().__init__('motor_test')
+        super().__init__('motor_test_dynamic_guided')
 
         # --- Publishers ---
         # We need to send Attitude (Angle) and Thrust commands continuously
