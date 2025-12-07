@@ -73,7 +73,7 @@ class MotorTestNode(Node):
             rclpy.spin_once(self, timeout_sec=0.05)
 
         # Step 3: Set Mode to OFFBOARD
-        self.set_mode("OFFBOARD")
+        self.set_mode("GUIDED")
         time.sleep(1)
 
         # Step 4: ARM
@@ -86,7 +86,7 @@ class MotorTestNode(Node):
 
             # Step 5: Increase Speed to 20%
             self.get_logger().info("⚡ INCREASING THROTTLE TO 20% ⚡")
-            self.target_thrust = 0.2  # <--- THIS SETS THE SPEED (0.0 to 1.0)
+            self.target_thrust = 0.5  # <--- THIS SETS THE SPEED (0.0 to 1.0)
 
             # Keep the node spinning for 20 seconds
             start_time = time.time()
