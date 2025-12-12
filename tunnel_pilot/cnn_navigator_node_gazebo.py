@@ -245,7 +245,7 @@ class CNNNavigator(Node):
 
         twist = Twist()
 
-        twist.angular.z = float(predicted_yaw) * 0.25
+        # twist.angular.z = float(predicted_yaw) * 0.25
 
         twist.linear.y = float(safe_y) * -0.1
         twist.linear.z = float(safe_z) * -0.1

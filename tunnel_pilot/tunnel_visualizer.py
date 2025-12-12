@@ -30,7 +30,7 @@ DRONE_PATH_TOPIC = '/tunnel_viz/drone_path'
 # Tunnel map settings
 MAX_TUNNEL_SLICES = 200  # Maximum number of cross-sections to keep
 # Minimum movement (meters) before adding new slice
-MIN_MOVEMENT_FOR_SLICE = 0.5
+MIN_MOVEMENT_FOR_SLIsCE = 0.5
 MAX_RANGE = 10.0  # Maximum LiDAR range to consider
 
 # CNN Constants

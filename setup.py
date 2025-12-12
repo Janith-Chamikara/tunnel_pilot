@@ -12,11 +12,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-
-        # --- 1. INSTALL LAUNCH FILES ---
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
-
-        # --- 2. INSTALL MODEL FILES ---
         (os.path.join('share', package_name, 'models'), glob('models/*')),
     ],
     install_requires=['setuptools'],
